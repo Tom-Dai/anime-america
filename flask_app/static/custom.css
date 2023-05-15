@@ -1,0 +1,53 @@
+anime {
+    max-width: 80;
+    padding: 1; 
+}
+
+.card-body > img {
+    max-width: 200;
+}
+
+.media-list {
+    border-top: 1px dashed rgb(150, 150, 150);
+}
+
+.review-item {
+    border-bottom: 1px dashed #a5a5a5;
+}
+
+.propic {
+    max-width: 50%;
+}
+
+.comment-pic {
+    max-width: 64px;
+}
+/* .nav-user {
+    border-right: 1px #1d1d1d;
+} */
+
+.token {
+    max-width: 800;
+    word-wrap: break-word;
+}
+
+.form-group {
+    margin: 10px;
+}
+
+.form-control {
+    width: 300px;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(128, 189, 255, 0.6);
+}
+
+.select-container {
+    display: flex;
+    justify-content: center;
+}
+.form-control-lg {
+    width: 600px;
+}

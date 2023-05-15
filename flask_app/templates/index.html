@@ -1,0 +1,42 @@
+{% extends "header.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div>
+        <form action="/" method="POST">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {{ form.search_query(class="form-control form-control-lg", placeholder="Search") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.genres(class_="form-control form-control-lg", multiple="", choice_attr={'class': 'form-check-input'}) }}
+                <label class="form-check-label">Genres (use ctr-click to select multiple)</label>
+            </div>
+
+            {% if form.errors %}
+            <div class="alert alert-warning" role="alert">
+                {% for field, errors in form.errors.items() %}
+                    {% for error in errors %}
+                        <span>{{ field }} - {{ error }}</span>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Search</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

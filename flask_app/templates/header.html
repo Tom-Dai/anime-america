@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-dark" style = "background-color: #e0291f;">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('animes.index') }}">
+        <div class="d-flex align-items-center">
+          <img src="{{ url_for('static', filename='usa.png') }}" alt="Anime America" style="max-height: 40px;">
+          <span class="ml-2">ANIME AMERICA</span>
+          <img src="{{ url_for('static', filename='usa.png') }}" alt="Anime America" style="max-height: 40px;">
+        </div>
+      </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav ml-auto">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('users.account') }}">Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('users.login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('users.register') }}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{% endblock %}
+
