@@ -5,62 +5,47 @@
 <b>{{ error_msg }}</b>
 {% endif %}
 
-{% if movie %}
+{% if anime %}
 
-{# Display card for the movie details #}
+{# Display card for the anime details #}
 <div class="row">
   <div class="col">
-    <div class="card text-center">
-      <div class="card-header">
-        {{ movie.title }} ({{ movie.year }})
+    <div class="card">
+      <div class="card-header text-center">
+        <h4 class="card-title">{{ anime.title }}</h4>
+        <p class="card-text text-muted">{{ anime.type }}</p>
       </div>
       <div class="card-body">
-        <img src="{{ movie.poster_url }}" class="mr-3 movie" alt="alt text">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><b>Directed by:</b> {{ movie.director }}</li>
-          <li class="list-group-item"><b>Actors:</b> {{ movie.actors }}</li>
-          <li class="list-group-item"><b>Genres:</b> {{ movie.genres }}</li>
-          <li class="list-group-item"><b>Awards:</b> {{ movie.awards }}</li>
-        </ul>
+        <div class="row">
+          <div class="col-md-4">
+            <img src="{{ anime.med_poster }}" class="mr-3 anime" alt="anime poster">
+          </div>
+          <div class="col-md-8">
+            <p class="card-text">{{ anime.synopsis }}</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><b>Episode Count:</b> {{ anime.epi_count }}</li>
+              <li class="list-group-item"><b>Start Date:</b> {{ anime.start }}</li>
+              <li class="list-group-item"><b>End Date:</b> {{ anime.end }}</li>
+              <li class="list-group-item"><b>Popularity Rank:</b> {{ anime.popular }}</li>
+              <b>Trailer:</b>
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ anime.trailer }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-{# Reviews #}
-<div class="row">
-  <div class="col-md-12">
-    <h1> Reviews <small class="float-right">{{ reviews|length }} reviews</small></h1>
-    <ul class="media-list">
-      {% for review in reviews %}
-      <li class="media review-item">
-        <div class="media-body">
-          <span class="float-right">
-            <small>{{ review.date }}</small>
-          </span>
-          <a href="{{ url_for('movies.user_detail', username=review.commenter.username) }}">
-            <strong>@{{ review.commenter.username }}</strong>
-          </a>
-          <p>
-            {{ review.content }}
-          </p>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
-
 {% if current_user.is_authenticated %}
-{# Movie review submission form #}
+<!-- anime review submission form -->
 <div class="row">
   <div class="col">
     <form method="POST" action="">
       {{ form.csrf_token }}
       <div class="form-group">
-        {{ form.text.label }}
-        {{ form.text(class="form-control") }}
-
+        <label for="{{ form.text.id }}">{{ form.text.label }}</label>
+        {{ form.text(class="form-control", placeholder="Write your review here") }}
         {% if form.text.errors %}
         <div class="alert alert-warning" role="alert">
           {% for error in form.text.errors %}
@@ -69,11 +54,82 @@
         </div>
         {% endif %}
 
+        <label for="{{ form.rating.id }}">{{ form.rating.label }}</label>
+        <div class="md-form">
+          <input id="{{ form.rating.id }}" name="{{ form.rating.name }}" type="number" class="form-control range-example-rating" min="1" max="5" value="0" step="1">
+        </div>
+
+        {% if form.rating.errors %}
+        <div class="alert alert-warning" role="alert">
+          {% for error in form.rating.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
       </div>
-      {{ form.submit() }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+      {% if success_msg %}
+      <div class="alert alert-success" role="alert">
+        {{ success_msg }}
+      </div>
+      {% endif %}
     </form>
   </div>
 </div>
+<script>
+  $(document).ready(function() {
+    $('.rating input').click(function () {
+        $('.rating label').removeClass('active');
+        $(this).prevAll('label').addClass('active');
+    });
+  });
+</script>
 {% endif %}
+
+{# Reviews #}
+<div class="row">
+  <div class="col-md-12">
+    <h1>Reviews<small class="float-right">{{ reviews|length }} reviews</small></h1>
+    <hr>
+    {% if reviews %}
+    {% for review in reviews %}
+    <div class="card my-3">
+      <div class="card-body">
+        <div class="media">
+          <div class="media-body">
+            <h5 class="card-title">
+              <a href="{{ url_for('animes.user_detail', username=review.commenter.username) }}">
+                <strong>@{{ review.commenter.username }}</strong>
+              </a>
+              <span class="float-right">
+                <small>{{ review.date }}</small>
+              </span>
+            </h5>
+            <p class="card-text">{{ review.content }}</p>
+            <div class="rating">
+              {% for i in range(1, 6) %}
+                {% if review.rating is not none and review.rating >= i %}
+                  <label class="active">&#9733;</label>
+                {% else %}
+                  <label>&#9734;</label>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <span style="color:red">EXERCISE</span> <span style="color:white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; -webkit-text-stroke: 1px black;">YOUR FIRST</span> <span style="color:blue">AMENDMENT</span>
+
+
+    {% endif %}
+  </div>
+</div>
+
+
+
 {% endif %}
 {% endblock content %}

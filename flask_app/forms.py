@@ -2,7 +2,7 @@ from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from wtforms import StringField, IntegerField, SubmitField, TextAreaField, PasswordField, SelectMultipleField
+from wtforms import StringField, IntegerField, SubmitField, TextAreaField, PasswordField, SelectMultipleField, IntegerRangeField
 import re
 from wtforms.validators import (
     InputRequired,
@@ -12,6 +12,7 @@ from wtforms.validators import (
     Email,
     EqualTo,
     ValidationError,
+
 )
 
 
@@ -20,9 +21,9 @@ from .models import User
 
 class SearchForm(FlaskForm):
     search_query = StringField(
-        "Query", validators=[Length(min=0, max=100)]
+        "Query", validators=[Length(min=0, max=100),InputRequired()]
     )
-    genres = SelectMultipleField(
+    '''genres = SelectMultipleField(
         "Genres",
         coerce=int,
         choices=[
@@ -43,15 +44,16 @@ class SearchForm(FlaskForm):
             (15, "School"),
             (16, "Ecchi"),
         ],
-    )
+    )'''
     submit = SubmitField("Search")
 
 
 class AnimeReviewForm(FlaskForm):
-    text = TextAreaField(
-        "Comment", validators=[InputRequired(), Length(min=5, max=500)]
-    )
+    text = TextAreaField("Comment", validators=[InputRequired(), Length(min=5, max=500)])
+    rating = IntegerField("Rating", validators=[InputRequired(), NumberRange(min=1, max=5)])
     submit = SubmitField("Enter Comment")
+
+
 #Custom validator for our password
 class PasswordValidator(object):
     def __init__(self, message=None):

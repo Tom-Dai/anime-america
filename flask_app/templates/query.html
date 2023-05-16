@@ -1,18 +1,57 @@
 {% extends "header.html" %}
+
 {% block content %}
 {% if error_msg %}
     <p>{{ error_msg }}</p>
 {% endif %}
 
 <div class="container-fluid">
-    {% for result in results %}
-    <div class="media">
-        <img src="{{ result.poster_url }}" class="mr-3 movie" alt="missing">
-        <div class="media-body">
-        <h5 class="mt-0"><a href="{{ url_for('animes.anime_detail', anime_id=result.anime_id) }}">{{ result.title }}</a> </h5>
+    <div class="row">
+        {% for result in results %}
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+            <div class="card h-100 border-primary">
+                <a href="{{ url_for('animes.anime_detail', anime_id=result.anime_id) }}" class="card-link">
+                    <div class="card-img-top" style="height: 350px; background-image: url({{ result.small_poster }}); background-size: cover;"></div>
+                    <div class="card-body">
+                        <h5 class="card-title mb-0">{{ result.title }}</h5>
+                        <p class="card-text synopsis-overlay">{{ result.synopsis }}</p>
+                    </div>
+                </a>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
+
+<style>
+    .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        transition: box-shadow 0.2s ease-in-out !important;
+    }
+    .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3) !important;
+    }
+    .synopsis-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        overflow-y: auto;
+        padding: 1rem;
+        text-align: justify;
+    }
+    .card:hover .synopsis-overlay {
+        opacity: 1;
+    }
+    .card-img-top {
+        height: 450px;
+        object-fit: cover;
+    }
+</style>
 
 {% endblock %}

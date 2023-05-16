@@ -10,6 +10,7 @@ from flask_login import (
 )
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from flask_talisman import Talisman
 
 # stdlib
 from datetime import datetime
@@ -42,6 +43,9 @@ def create_app(test_config=None):
     db.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+    #CSP security
+    #TODO
+
 
     app.register_blueprint(users)
     app.register_blueprint(animes)

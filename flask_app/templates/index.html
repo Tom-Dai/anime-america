@@ -15,13 +15,9 @@
             {% endwith %}
 
             {{ form.csrf_token }}
+            <h2>Anime:</h2>
             <div class="form-group">
                 {{ form.search_query(class="form-control form-control-lg", placeholder="Search") }}
-            </div>
-
-            <div class="form-group">
-                {{ form.genres(class_="form-control form-control-lg", multiple="", choice_attr={'class': 'form-check-input'}) }}
-                <label class="form-check-label">Genres (use ctr-click to select multiple)</label>
             </div>
 
             {% if form.errors %}

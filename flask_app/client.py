@@ -14,7 +14,13 @@ class Anime(object):
         self.med_poster = kitsu_json['posterImage']['medium'] 
         self.epi_count = kitsu_json['episodeCount']
         self.type = kitsu_json['showType']
-        self.genres = [genre["attributes"]["name"] for genre in anime["relationships"]["genres"]["data"]]
+        self.status = kitsu_json['status']
+        self.start = kitsu_json['startDate']
+        self.end = kitsu_json['endDate']
+        self.popular = kitsu_json['popularityRank']
+        self.trailer = kitsu_json['youtubeVideoId']
+        '''print(anime["relationships"])
+        self.genres = [genre["attributes"]["name"] for genre in anime["relationships"]["genres"]["data"]]'''
 
     def __repr__(self):
         return self.title
@@ -36,21 +42,19 @@ class AnimeClient(object):
 
         params = {
             'filter[text]': search_string,
-            "include": "genres"
+            'page[limit]': 20,
+            'page[offset]': 0
         }
-        resp = requests.get(url, headers=self.headers, params=params)
+        resp = requests.get(self.url, headers=self.headers, params=params)
 
         if resp.status_code != 200:
             raise ValueError(
                 "Search request failed"
             )
-
-        data = resp.json()['data']
         results = []
-        if response.status_code == 200:
-            for anime in data:
-                
-                results.append(Anime(anime))
+        data = resp.json()['data']
+        for anime in data:
+            results.append(Anime(anime))
 
         return results
 
@@ -59,18 +63,15 @@ class AnimeClient(object):
         Use to obtain an Anime object representing the anime by its id
         """
         url = f'https://kitsu.io/api/edge/anime/{anime_id}'
-        params = {
-            "include": "genres"
-        }
-        response = requests.get(url, headers=self.headers, params=params)
+      
+        response = requests.get(url, headers=self.headers)
 
         if response.status_code == 200:
             data = response.json()['data']
             anime = Anime(data)
             return anime
         else:
-            print('Failed to retrieve anime:', response.text)
-            return None
+            raise ValueError("no such anime exists")
 
     def search_by_genre(self, genres):
         # Convert the list of genre IDs to a comma-separated string

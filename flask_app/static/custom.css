@@ -51,3 +51,6 @@ anime {
 .form-control-lg {
     width: 600px;
 }
+.anime-card {
+    max-width: 300px;
+  }

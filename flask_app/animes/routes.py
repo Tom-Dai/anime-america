@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import current_user
 
+
 from .. import anime_client
 from ..forms import AnimeReviewForm, SearchForm
 from ..models import User, Review
@@ -11,19 +12,13 @@ animes = Blueprint('animes',__name__)
 @animes.route("/", methods=["GET", "POST"])
 def index():
     form = SearchForm()
-    #check the from
     if request.method == "POST" and form.validate():
-        if form.search_query is None and form.genres is None:
-            flash("Please enter a query or select a genre")
-            return redirect(url_for("animes.index"))
- 
-        return redirect(url_for("animes.query_results", query=form.search_query.data, genres=form.genres.data))
-
+        return redirect(url_for("animes.query_results", query=form.search_query.data))
     return render_template("index.html", form=form)
 
 
-@animes.route("/search-results/<query>", methods=["GET"])
-def query_results(query,genres):
+@animes.route("/search-results/<query>/", methods=["GET"])
+def query_results(query):
     try:
         results = anime_client.search(query)
     except ValueError as e:
@@ -41,7 +36,7 @@ def anime_detail(anime_id):
         flash(str(e))
         return redirect(url_for("users.login"))
 
-    form = animeReviewForm()
+    form = AnimeReviewForm()
     if form.validate_on_submit() and current_user.is_authenticated:
         review = Review(
             commenter=current_user._get_current_object(),
@@ -49,6 +44,7 @@ def anime_detail(anime_id):
             date=current_time(),
             anime_id=anime_id,
             anime_title=result.title,
+            rating = form.rating.data
         )
         review.save()
 

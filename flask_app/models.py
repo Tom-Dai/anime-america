@@ -3,7 +3,7 @@ from datetime import datetime
 from . import db, login_manager
 from . import config
 from .utils import current_time
-import base64
+
 
 
 @login_manager.user_loader
@@ -28,6 +28,7 @@ class Review(db.Document):
     date = db.StringField(required=True)
     anime_id = db.StringField(required=True)
     anime_title = db.StringField(required=True, min_length=1, max_length=100)
+    rating = db.IntField(required=True)
 
 #remember to create a watchlist collection
 class Watchlist(db.Document):
