@@ -128,7 +128,7 @@ class UpdateUsernameForm(FlaskForm):
             if user is not None:
                 raise ValidationError("That username is already taken")
 
-class AddWatchlistForm(FlaskForm):
+class AddToWatchlistForm(FlaskForm):
     name = StringField(
         "Watchlist Name", validators=[InputRequired(), Length(min=1, max=40)])
     submit = SubmitField("Create Watchlist")

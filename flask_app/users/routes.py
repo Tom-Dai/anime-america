@@ -2,8 +2,8 @@ from flask import Blueprint, redirect, url_for, render_template, flash, request
 from flask_login import current_user, login_required, login_user, logout_user
 
 from .. import bcrypt
-from ..forms import RegistrationForm, LoginForm, UpdateUsernameForm
-from ..models import User
+from ..forms import RegistrationForm, LoginForm, UpdateUsernameForm, AddToWatchlistForm
+from ..models import User, Watchlist
 
 users = Blueprint('users',__name__)
 
@@ -15,7 +15,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-        user = User(username=form.username.data, email=form.email.data, password=hashed, profile_picture= 'eagle.jpg')
+        user = User(username=form.username.data, email=form.email.data, password=hashed)
         user.save()
 
         return redirect(url_for("users.login"))
@@ -55,15 +55,27 @@ def logout():
 @login_required
 def account():
     username_form = UpdateUsernameForm()
-
+    watchlist_form = AddToWatchlistForm()
     if username_form.validate_on_submit():
         # current_user.username = username_form.username.data
         current_user.modify(username=username_form.username.data)
         current_user.save()
         return redirect(url_for("users.account"))
 
+    if watchlist_form.validate_on_submit():
+        if Watchlist.objects(user=current_user, name = watchlist_form.name.data).first() is None:
+            watchlist = Watchlist(user=current_user,name=watchlist_form.name.data,anime_ids = [])
+            watchlist.save()
+            flash('created new watchlist')
+            return redirect(url_for("users.account"))
+        else:
+            flash('already have watchlist with that name')
+            return redirect(url_for("users.account"))
+
+        
+
     return render_template(
         "account.html",
         title="Account",
-        username_form=username_form,
+        username_form=username_form,watchlist_form=watchlist_form
     )

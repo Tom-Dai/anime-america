@@ -31,6 +31,21 @@
         </div>
     </div>
 
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-8">
+            <h2>Watchlists ({{ watchlists|length }})</h2>
+            <hr>
+            {% for watchlist in watchlists %}
+            <div class="card my-3">
+                <div class="card-header bg-secondary text-white">
+                    <a href="{{ url_for('animes.watchlist_animes', watchlist_id=watchlist.name, username= username) }}" class="text-white">{{ watchlist.name }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+
 
 
 </div>

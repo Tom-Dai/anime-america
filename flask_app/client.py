@@ -71,7 +71,7 @@ class AnimeClient(object):
             anime = Anime(data)
             return anime
         else:
-            raise ValueError("no such anime exists")
+            raise ValueError("retrival failed")
 
     def search_by_genre(self, genres):
         # Convert the list of genre IDs to a comma-separated string

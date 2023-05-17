@@ -4,7 +4,15 @@
 {% if error_msg %}
 <b>{{ error_msg }}</b>
 {% endif %}
-
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-info">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 {% if anime %}
 
 {# Display card for the anime details #}
@@ -29,6 +37,27 @@
               <li class="list-group-item"><b>Popularity Rank:</b> {{ anime.popular }}</li>
               <b>Trailer:</b>
               <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ anime.trailer }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <form method="POST" action="">
+                {{ watchlist_form.csrf_token }}
+                <div class="form-group">
+                  <label for="{{ form.text.id }}">{{ watchlist_form.name.label }}</label>
+                  {{ watchlist_form.name(class="form-control", placeholder="Add to which watchlist?") }}
+                  {% if watchlist_form.name.errors %}
+                  <div class="alert alert-warning" role="alert">
+                    {% for error in watchlist_form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+          
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                {% if success_msg %}
+                <div class="alert alert-success" role="alert">
+                  {{ success_msg }}
+                </div>
+                {% endif %}
+              </form>
             </ul>
           </div>
         </div>
